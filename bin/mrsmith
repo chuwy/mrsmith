@@ -13,6 +13,10 @@ try:
 except ImportError:
     print("pyhton-gnupg not found. Please, install it with `pip install python-gnupg`")
     sys.exit(1)
+try:
+    import pyperclip
+except ImportError:
+    pass
 
 from mrsmith.api import get_secret
 from mrsmith.helpers import get_config, get_input
@@ -45,6 +49,21 @@ def show_secret(args):
         print("Can't access to this secret")
         sys.exit(1)
     print(secret)
+    sys.exit(0)
+
+
+def cp_secret(args):
+    try:
+        secret = get_secret(args.secret)
+    except IOError:
+        print("Can't access to this secret")
+        sys.exit(1)
+    try:
+        pyperclip.copy(str(secret))
+    except NameError:
+        print("pyperclip is using for ``cp`` action.\nSince it isn't available, "
+              "you can't copy your secret to clipboard")
+        sys.exit(1)
     sys.exit(0)
 
 
@@ -100,6 +119,11 @@ def arg_parse():
                                      help="output secret to the terminal")
     parser_show.add_argument('secret')
     parser_show.set_defaults(func=show_secret)
+
+    parser_cp = actions.add_parser('cp',
+                                   help="copy secret into ClipBoard")
+    parser_cp.add_argument('secret')
+    parser_cp.set_defaults(func=cp_secret)
 
     parser_list = actions.add_parser('list', help="list all secrets")
     parser_list.set_defaults(func=list_secrets)
