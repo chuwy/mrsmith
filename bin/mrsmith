@@ -1,0 +1,120 @@
+#!/usr/bin/env python
+
+__author__ = 'chuwy'
+__license__ = 'MIT'
+
+import argparse
+import os
+import sys
+from getpass import getpass
+
+try:
+    import gnupg
+except ImportError:
+    print("pyhton-gnupg not found. Please, install it with `pip install python-gnupg`")
+    sys.exit(1)
+
+from mrsmith.api import get_secret
+from mrsmith.helpers import get_config, get_input
+
+
+def add_secret(args):
+    path = config.get('Paths', 'secrets')
+    secretsdir_path = os.path.abspath(os.path.expanduser(path))
+    secretfile_path = os.path.join(secretsdir_path, args.secret)
+
+    if os.path.exists(secretfile_path):
+        print("Secret already exists.")
+        sys.exit(1)
+    if args.show:
+        secret = get_input("Please, enter your secret "
+                           "(your input will be visible!): ")
+    else:
+        secret = getpass("Please, enter your secret: ")
+
+    gpg.encrypt(secret,
+                config.get('GPG', 'recipient'),
+                output=secretfile_path)
+    sys.exit(0)
+
+
+def show_secret(args):
+    try:
+        secret = get_secret(args.secret)
+    except IOError:
+        print("Can't access to this secret")
+        sys.exit(1)
+    print(secret)
+    sys.exit(0)
+
+
+def print_secrets(absolute_path):
+    """
+    Print files with two level folding
+    """
+    IGNORE_FILES = ['.DS_Store', '.git']
+    secrets = os.listdir(absolute_path)
+    for secret in secrets:
+        if secret in IGNORE_FILES: continue
+        secret = os.path.join(absolute_path, secret)
+        if os.path.isdir(secret):
+            print("+ " + os.path.basename(secret))
+            subsecrets = os.listdir(secret)
+            for subsecret in subsecrets:
+                if subsecret in IGNORE_FILES: continue
+                if os.path.isdir(os.path.join(absolute_path,
+                                              secret,
+                                              subsecret)):
+                    print('  {} <- INVALID! Only two levels supported'.format(subsecret))
+                    continue
+                print("  " + subsecret)
+        else:
+            print(os.path.basename(secret))
+
+
+def list_secrets(args):
+    path = config.get('Paths', 'secrets')
+    absolute_path = os.path.abspath(os.path.expanduser(path))
+    if os.path.exists(absolute_path):
+        print_secrets(absolute_path)
+    else:
+        print("Directory {} isn't exists. Please check your configuration"
+              " or add first secret.".format(absolute_path))
+        sys.exit(1)
+
+
+def arg_parse():
+    parser = argparse.ArgumentParser(description="Dead simple password manager")
+    actions = parser.add_subparsers(metavar="<action>")
+
+    parser_add = actions.add_parser('add', help="add new secret")
+    parser_add.add_argument('-u', '--username')
+    parser_add.add_argument('-s', '--show', action='store_true',
+                            help="show secret when typing")
+    parser_add.add_argument('-n', '--note',
+                            help="short note about this secret")
+    parser_add.add_argument('secret')
+    parser_add.set_defaults(func=add_secret)
+
+    parser_show = actions.add_parser('show',
+                                     help="output secret to the terminal")
+    parser_show.add_argument('secret')
+    parser_show.set_defaults(func=show_secret)
+
+    parser_list = actions.add_parser('list', help="list all secrets")
+    parser_list.set_defaults(func=list_secrets)
+
+    parser.add_argument('-v', '--version', action='version',
+                        version='Mr. Smith 0.0.1',
+                        help="show version and exit")
+
+    parser.add_argument('-q', '--quiet', action='store_true')
+
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    args = arg_parse()
+    config = get_config()
+    gpg = gnupg.GPG(gnupghome=config.get('GPG', 'gnupghome'), use_agent=True)
+    args.func(args)
