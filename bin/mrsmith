@@ -36,6 +36,7 @@ def add_secret(args):
     else:
         secret = getpass("Please, enter your secret: ")
 
+    gpg = gnupg.GPG(gnupghome=config.get('GPG', 'gnupghome'), use_agent=True)
     gpg.encrypt(secret,
                 config.get('GPG', 'recipient'),
                 output=secretfile_path)
@@ -140,5 +141,4 @@ def arg_parse():
 if __name__ == '__main__':
     args = arg_parse()
     config = get_config()
-    gpg = gnupg.GPG(gnupghome=config.get('GPG', 'gnupghome'), use_agent=True)
     args.func(args)

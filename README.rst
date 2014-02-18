@@ -48,16 +48,16 @@ You can access your secrets within python code, for example:
 Planned features
 ================
 
-* [X] Get secret within python code
-* [X] Copy text to Mac OS X clipboard, and remove it after some period (``cp subcommand``)
-* Minimal security audit
-* Upload to PyPi, setup with copying to $PATH
-* logging for non-console access
-* raise error on special symbols
-* username option
-* note option
-* Refactoring
-* Check py3k compatibility
++ [X] Get secret within python code
++ [X] Copy text to Mac OS X clipboard, and remove it after some period (``cp subcommand``)
++ Minimal security audit
++ Upload to PyPi, setup with copying to $PATH
++ logging for non-console access
++ raise error on special symbols
++ username option
++ note option
++ Refactoring
++ Check py3k compatibility
 
 Tips
 ====
