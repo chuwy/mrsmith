@@ -15,4 +15,4 @@ def get_secret(secret_name):
     secretfile = open(secretfile_path, 'rb')
     secret = gpg.decrypt_file(secretfile)
     secretfile.close()
-    return secret
+    return str(secret)
