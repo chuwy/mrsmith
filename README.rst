@@ -10,13 +10,18 @@ Thus, it's a very simple and apparently non-secure way to store data and if you 
 *It's just better than plain-text. Nothing more.*
 
 
+Installation
+============
+It's unavailable on PyPi for now, so you can install it from github:
+
+.. code-block::
+  pip install -e git+https://github.com/chuwy/mrsmith.git#egg=mrsmith
+
+It requires python-gnupg for interacting with GPG (and of course **GPG itself**) and pyperclip for interacting with ClipBoard.
+
 Objectives
 ==========
-
-Store
------
-Password should store in default location $XDG_CONFIG_HOME/mrsmith/secrets, and named with
-title of secret.
+mrsmith create documentation after first run. It's placed inside $XDG_CONFIG_HOME/mrsmith ($XDG_CONFIG_HOME is $HOME/.config on most systems).
 
 Command Line Interface
 ----------------------
@@ -31,7 +36,9 @@ Output password to terminal, after masterpass prompt:
 
 Copy password to clipboard, after masterpass prompt:
 ``mrsmith cp -u MrRed github.com``
-If you have several usernames attached to particular service, you should specify it.
+If you have several usernames attached to particular service, you must specify it.
+
+Anyway, ``-u`` and ``-n`` doesn't work for a while.
 
 Low-level access
 ----------------
