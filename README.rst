@@ -15,6 +15,7 @@ Installation
 It's unavailable on PyPi for now, so you can install it from github:
 
 .. code-block::
+
   pip install -e git+https://github.com/chuwy/mrsmith.git#egg=mrsmith
 
 It requires python-gnupg for interacting with GPG (and of course **GPG itself**) and pyperclip for interacting with ClipBoard.
@@ -33,6 +34,8 @@ Tell new secret (creates db, if it doesn't exists):
 
 Output password to terminal, after masterpass prompt:
 ``mrsmith show cia``
+
+List all your secrets: ``mrsmith list``
 
 Copy password to clipboard, after masterpass prompt:
 ``mrsmith cp -u MrRed github.com``

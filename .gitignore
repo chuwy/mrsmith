@@ -2,3 +2,4 @@
 .idea
 .ropeproject
 *.egg-info
+src
