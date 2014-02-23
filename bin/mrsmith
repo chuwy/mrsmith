@@ -18,7 +18,7 @@ try:
 except ImportError:
     pass
 
-from mrsmith.api import get_secret
+from mrsmith.api import get_secret_path, get_secret
 from mrsmith.helpers import get_config, get_input
 
 
@@ -64,6 +64,16 @@ def cp_secret(args):
     except NameError:
         print("pyperclip is using for ``cp`` action.\nSince it isn't available, "
               "you can't copy your secret to clipboard")
+        sys.exit(1)
+    sys.exit(0)
+
+
+def rm_secret(args):
+    secretfile_path = get_secret_path(args.secret)
+    try:
+        os.remove(secretfile_path)
+    except IOError:
+        print("Can't access to this secret")
         sys.exit(1)
     sys.exit(0)
 
@@ -125,6 +135,11 @@ def arg_parse():
                                    help="copy secret into ClipBoard")
     parser_cp.add_argument('secret')
     parser_cp.set_defaults(func=cp_secret)
+
+    parser_rm = actions.add_parser('rm',
+                                   help="remove secret")
+    parser_rm.add_argument('secret')
+    parser_rm.set_defaults(func=rm_secret)
 
     parser_list = actions.add_parser('list', help="list all secrets")
     parser_list.set_defaults(func=list_secrets)
