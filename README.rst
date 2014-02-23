@@ -7,6 +7,8 @@ Disclaimer
 Only intention of this application - is prevent user from store chunks of text (like passowrds) in plain text format and give tool to extract them from python code.
 Thus, it's a very simple and apparently non-secure way to store data and if you messing up with NSA, you probably should check other tools.
 
+I can advice `keyring <https://bitbucket.org/kang/python-keyring-lib>`_ which is also written in python, supports system keyring services (like OS X Keychain) and actively developing. On the other hand, keyring is developed with accent on passwords. Mr. Smith developed with accent on any piece of text information.
+
 *It's just better than plain-text. Nothing more.*
 
 
