@@ -33,6 +33,7 @@ def init_config(configpath, secretsdir=None, recipient=None):
     config.set('Paths', 'secrets', secretsdir)
     config.add_section('GPG')
     config.set('GPG', 'recipient', recipient)
+    config.set('GPG', 'gnumpghome', expanduser('~/.gnupg'))
     with open(configpath, 'wb') as configfile:
         config.write(configfile)
     return config
