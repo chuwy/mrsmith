@@ -17,6 +17,8 @@ try:
     import pyperclip
 except ImportError:
     pass
+except Exception:       # pyperclip raises plain Exception :(
+    pass
 
 from mrsmith.api import get_secret_path, get_secret
 from mrsmith.helpers import get_config, get_input
