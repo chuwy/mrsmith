@@ -9,7 +9,7 @@ setup(name='mrsmith',
       author='Anton Parkhomenko',
       author_email='anton@chuwy.ru',
       url='http://chuwy.ru/mrsmith',
-      install_requires=['python-gnupg', 'pyperclip'],
+      install_requires=['python-gnupg', 'pyperclip == 1.3'],
       packages=['mrsmith'],
       scripts = ['bin/mrsmith'],
       license='MIT'
