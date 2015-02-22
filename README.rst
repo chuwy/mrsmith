@@ -20,7 +20,12 @@ It's unavailable on PyPi for now, so you can install it from github:
 
   pip install -e git+https://github.com/chuwy/mrsmith.git#egg=mrsmith
 
-It requires python-gnupg for interacting with GPG (and of course **GPG itself**) and pyperclip for interacting with ClipBoard.
+It requires python-gnupg for interacting with GPG (and of course **GPG itself**).
+
+Also if you have installed pyperclip, you can store your secrets in OS clipboard.
+Though it isn't installed by default.
+
+It is highly recommended to install GPG2 (instead of 1)and point path to executable (gpgninary) in configuration.
 
 Objectives
 ==========
@@ -64,7 +69,7 @@ Planned features
 + [X] Copy text to Mac OS X clipboard, and remove it after some period (``cp subcommand``)
 + Minimal security audit
 + Upload to PyPi, setup with copying to $PATH
-+ logging for non-console access
++ [X] logging for non-console access
 + raise error on special symbols
 + username option
 + note option

@@ -2,15 +2,16 @@
 
 from setuptools import setup
 
+from mrsmith import __version__
 
 setup(name='mrsmith',
-      version='0.0.1',
+      version=__version__,
       description=open('README.rst', 'r').read(),
       author='Anton Parkhomenko',
-      author_email='anton@chuwy.ru',
+      author_email='mailbox@chuwy.me',
       url='http://chuwy.ru/mrsmith',
-      install_requires=['python-gnupg', 'pyperclip == 1.3'],
+      install_requires=['python-gnupg'],
       packages=['mrsmith'],
-      scripts = ['bin/mrsmith'],
+      scripts=['bin/mrsmith'],
       license='MIT'
       )

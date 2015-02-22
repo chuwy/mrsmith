@@ -2,19 +2,17 @@
 Mostly initialization and py3/py2-compatible functions.
 """
 
-
 try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
+import logging
 from os import getenv, makedirs
 from os.path import dirname, exists, expanduser, join, realpath
 
 
 def get_input(prompt):
-    """
-    Py3k compatible way for user input.
-    """
+    """ Py3k compatible way for user input """
     try:
         input = raw_input   # We're in python 2
     except NameError:
@@ -40,9 +38,7 @@ def init_config(configpath, secretsdir=None, recipient=None):
 
 
 def get_config_path():
-    """
-    Try to get $XDG_CONFIG_HOME or fallback to ~/.config
-    """
+    """ Try to get $XDG_CONFIG_HOME or fallback to ~/.config """
     try:
         configpath = realpath(expanduser(getenv('XDG_CONFIG_HOME')))
     except AttributeError:
@@ -57,9 +53,10 @@ def get_config(configfile=None):
     if not configfile:
         configfile = get_config_path()
     if not exists(configfile):
-        print("It seems that it your first run.\n"
-              "I'm creating a configfile at {}.\n"
-              "Please, be sure that you gave me proper settings.".format(configfile))
+        logging.info("It seems that it your first run.\n"
+                     "I'm creating a configfile at {}.\n"
+                     "Please, be sure that you gave me proper settings."
+                     .format(configfile))
         makedirs(dirname(configfile), 0o700)
         secretsdir = get_input("Specify dir, where you will be keep your secrets.\n"
                                "Directory will be created when you add your first secret "

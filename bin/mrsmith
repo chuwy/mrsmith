@@ -4,6 +4,7 @@ __author__ = 'chuwy'
 __license__ = 'MIT'
 
 import argparse
+import logging
 import os
 import sys
 from getpass import getpass
@@ -11,7 +12,8 @@ from getpass import getpass
 try:
     import gnupg
 except ImportError:
-    print("pyhton-gnupg not found. Please, install it with `pip install python-gnupg`")
+    logging.error("pyhton-gnupg not found. "
+                  "Please, install it with `pip install python-gnupg`")
     sys.exit(1)
 try:
     import pyperclip
@@ -20,6 +22,7 @@ except ImportError:
 except Exception:       # pyperclip raises plain Exception :(
     pass
 
+from mrsmith import __version__
 from mrsmith.api import get_secret_path, get_secret
 from mrsmith.helpers import get_config, get_input
 
@@ -30,7 +33,7 @@ def add_secret(args):
     secretfile_path = os.path.join(secretsdir_path, args.secret)
 
     if os.path.exists(secretfile_path):
-        print("Secret already exists.")
+        logging.warning("Secret already exists.")
         sys.exit(1)
     if args.show:
         secret = get_input("Please, enter your secret "
@@ -49,8 +52,10 @@ def show_secret(args):
     try:
         secret = get_secret(args.secret)
     except IOError:
-        print("Can't access to this secret")
+        logging.error("Can't access to {}".format(args.secret))
         sys.exit(1)
+    if len(secret) == 0:
+        logging.warning("Secret {} have zero length".format(args.secret))
     print(secret)
     sys.exit(0)
 
@@ -59,13 +64,14 @@ def cp_secret(args):
     try:
         secret = get_secret(args.secret)
     except IOError:
-        print("Can't access to this secret")
+        logging.error("Can't access to {}".format(args.secret))
         sys.exit(1)
     try:
         pyperclip.copy(str(secret))
     except NameError:
-        print("pyperclip is using for ``cp`` action.\nSince it isn't available, "
-              "you can't copy your secret to clipboard")
+        logging.error("pyperclip is using for ``cp`` action.\n"
+                      "Since it isn't available, "
+                      "you can't copy your secret to clipboard")
         sys.exit(1)
     sys.exit(0)
 
@@ -75,7 +81,7 @@ def rm_secret(args):
     try:
         os.remove(secretfile_path)
     except IOError:
-        print("Can't access to this secret")
+        logging.error("Can't access to {}".format(args.secret))
         sys.exit(1)
     sys.exit(0)
 
@@ -97,7 +103,7 @@ def print_secrets(absolute_path):
                 if os.path.isdir(os.path.join(absolute_path,
                                               secret,
                                               subsecret)):
-                    print('  {} <- INVALID! Only two levels supported'.format(subsecret))
+                    logging.error('  {} <- INVALID! Only two levels supported'.format(subsecret))
                     continue
                 print("  " + subsecret)
         else:
@@ -110,8 +116,8 @@ def list_secrets(args):
     if os.path.exists(absolute_path):
         print_secrets(absolute_path)
     else:
-        print("Directory {} isn't exists. Please check your configuration"
-              " or add first secret.".format(absolute_path))
+        logging.error("Directory {} isn't exists. Please check your configuration"
+                      " or add first secret.".format(absolute_path))
         sys.exit(1)
 
 
@@ -147,7 +153,7 @@ def arg_parse():
     parser_list.set_defaults(func=list_secrets)
 
     parser.add_argument('-v', '--version', action='version',
-                        version='Mr. Smith 0.0.1',
+                        version='Mr. Smith ' + __version__,
                         help="show version and exit")
 
     parser.add_argument('-q', '--quiet', action='store_true')
@@ -157,5 +163,9 @@ def arg_parse():
 
 if __name__ == '__main__':
     args = arg_parse()
+    if args.quiet:
+        logging.basicConfig(level=logging.CRITICAL)
+    else:
+        logging.basicConfig(level=logging.INFO)
     config = get_config()
     args.func(args)
